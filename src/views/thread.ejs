@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ja">
+  <%- include('head') %>
+  <body class="thread-body">
+    <%- include('header') %>
+    <% if(redirect) {%>
+      <script>
+        document.addEventListener("DOMContentLoaded", function() {
+          scrollToBottom();
+          finishAnimation();
+        });
+      </script>
+    <% } %>
+    <main>
+      <div class="thread-title-overview">
+        <h2><a href="<%= thread.id %>" class="thread-title"><%= thread.title %><%if(favorite) {%><i class="fa-solid fa-star" style="margin-left: 10px;"></i><%}%></a></h2>
+        <h4><%= thread.overview %></h4>
+         <p><span id="hash"></span></p>
+         <% if(user) { %>
+          <div id="button-box"></div>
+          <button id="edit-display-button" class="reply-button"><i class="fa-regular fa-pen-to-square"></i>概要の編集</button>
+          <form action="/threads/<%= thread.id %>/edit" method="post">
+            <textarea
+              style="display: none; font-size: 20px;"
+              name="overview"
+              id="edit-overview"
+              class="edit-textarea"
+            ><%= thread.overview %></textarea>
+            <button type="submit" style="display: none" id="edit-button" class="reply-button">
+            完了
+            </button>
+          </form>
+          <form action="/user/favorite" method="post">
+            <input type="hidden" name="threadid" value="<%= thread.id %>">
+            <% if(favorite) { %>
+              <button class="reply-button"><i class="fa-solid fa-star"></i>お気に入り解除</button>
+            <% } else { %>
+              <button class="reply-button"><i class="fa-solid fa-star"></i>お気に入り登録</button>
+            <% } %>
+          </form>
+        <% } %>
+        <% if( user.administrator === "admin" ){ %>
+          <div id="deletebutton">
+            <form action="/threads/<%= thread.id %>/delete" >
+              <button type="submit" class="reply-button"><i class="fa-solid fa-trash"></i>スレッドの削除</button>
+            </form>
+          </div>
+        <% } %>
+      </div>
+      <hr id="headborder2" />
+      <div class="subtitle">
+        <% if(comments){ %> <% let id = 1; %> <% comments.forEach(comment => { %>
+          <div class="one-comment" id="one-comment<%= comment.id %>">
+            <span id="comment_<%= comment.commentId %>" class="comment-id"><%= comment.commentId %></span>
+            <% if(thread.anonymous === "username") { %>
+              <% if( !users[id-1] ) { %>
+                <span>ユーザーが削除されています</span>
+              <% } else { %>
+                <span><%= users[id - 1].username%></span>
+              <% } %>
+            <% } %>
+            <button onclick="rep('<%= comment.commentId %>')" class="reply-button"><i class="fa-solid fa-reply"></i>reply</button>
+            <button id="copy-button<%= id %>" data-copyContent="<%= comment.content %>" class="reply-button"><i class="fa-solid fa-copy"></i>copy</button>
+            <sapn class="createtime"
+              ><% const min = ("0" + comment.createdAt.getMinutes()).slice(-2);
+              const sec = ("0" + comment.createdAt.getSeconds()).slice(-2); const
+              time = comment.createdAt.getFullYear() + "/" +
+              (comment.createdAt.getMonth() + 1) + "/" + comment.createdAt.getDate()
+              + " " + comment.createdAt.getHours() + ":" + min + ":" + sec; %> <%=
+              time %></sapn>
+              <br>
+            <% if(comment.reply !== '') {
+              const repNum = parseInt(comment.reply);
+              if(repNum > 0 && repNum <= comments.length) {
+                %>　　<a href="#comment_<%= comment.reply %>" class="reply-form">　reply : <%= comment.reply %>
+                  　<span class="reply-text"><%
+                    for(let i = 0; i < comments.length; i++) {
+                      if(comments[i].commentId === comment.reply) {
+                        %><%= comments[i].content %><%
+                      }
+                    }
+                    %></span>　</a><%
+              }
+            }
+            %>
+          <p id="commentline"><% 
+            let leavetext = comment.content; while(leavetext !== "") {
+            if(leavetext.match(/^#/)) {
+              let tag = "";
+              let retext = leavetext.slice(1);
+              let digit = 0;
+              while(retext.match(/^\S/) && retext !== "") {
+                tag = tag + retext.slice(0,1); 
+                retext = retext.slice(1);
+                digit++; 
+              } 
+              %><a href="/threads/<%= thread.id %>?hashtag=<%= tag %>"><%= leavetext.slice(0,1) %><%= tag %></a><% 
+                leavetext = leavetext.slice(1 + digit); 
+            }
+            if(leavetext.match(/^>>[0-9]+/)) { 
+              let retext = leavetext.slice(2); 
+              let strnum = "";
+              let digit = 0;
+              while(retext.match(/^[0-9]/)) { 
+                strnum = strnum + retext.slice(0,1); 
+                retext = retext.slice(1); 
+                digit++; 
+              } 
+              let num = parseInt(strnum); 
+              if(num <= commentCount) { 
+                %><a href="#comment_<%= strnum %>"><%= leavetext.slice(0,2) %><%= strnum %></a><% 
+                leavetext = leavetext.slice(2 + digit); 
+              } else { 
+                %><%= leavetext.slice(0,2 + digit) %><% leavetext = leavetext.slice(2 + digit); 
+              } 
+            } 
+            else { 
+              %><%= leavetext.slice(0,1)%><% leavetext = leavetext.slice(1); 
+            } 
+            } %></p>
+        </div>
+        <% id++; %> <% }); %> <% } %>
+      </div>
+    </main>
+    <footer class="thread-foot">
+      <a href="/threads" style="color: white">HOMEに戻る</a>
+      <span id="foot-title"><b><%= thread.title %></b></span>
+      <button onclick="scrollToUpper()" style="margin-left: 5em;" class="scroll-button">↑</button>
+      <button onclick="scrollToBottom()" class="scroll-button">↓</button>
+      <form action="/comments" method="post">
+        <textarea
+          name="content"
+          id="input-content"
+          placeholder="コメント"
+          required
+          class="comment-textbox"
+        ></textarea>
+        <button type="submit" class="comment-button">コメントする</button>
+        <input type="hidden" name="reply" id="reply" value="-1" />
+        reply : <span id="repView">未選択</span><% const nextId = commentCount + 1; %>
+        <input type="hidden" name="threadId" value="<%= thread.id %>" />
+        <input type="hidden" name="commentId" value="<%= nextId %>" />
+        <span id="tags"></span>
+      </form>
+    </footer>
+  </body>
+</html>

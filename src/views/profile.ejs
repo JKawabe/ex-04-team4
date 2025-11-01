@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ja">
+  <%- include('head') %>
+  <body>
+    <%- include('header') %>
+    <form action="/user/update" method="post" class="profile">
+      <h2>プロフィール</h2>
+      <div class="profile-div">
+        <label for="color">テーマカラーを選択</label><br>
+        <input type="color" value="<%= user.theme_color %>" id="color" name="color" class="profile-color"><br>
+        <label for="username">ユーザー名を入力</label><br>
+        <% if(error) {%>
+          <p><%= error %></p>
+        <% } %>
+        <input type="text" value="<%= user.username %>" id="username" name="username" class="change-username">
+        <button class="reply-button">変更を保存</button> 
+      </div>
+    </form>
+    <div class="user-list">
+      <% if(user.administrator === "admin") {%>
+        <h2>ユーザー一覧</h2>
+        <% if(users) { %>
+          <% for (const use of users) { %>
+            <div class="user-box">
+              <span class="user-box-username"><%= use.username %></span><br>
+              <span class="user-box-employee-id">社員ID: <%= use.employee_id %></span>
+              <% if(use.administrator === "admin") {%>
+                <span>権限：管理者<i class="fa-solid fa-user-tie"></i></span><br>
+                <% if(use.id !== user.id) {%>
+                  <form action="/user/admin" method="post" class="admin-button">
+                      <input type="hidden" name="userid" id="" value="<%= use.id %>">
+                      <button class="reply-button">一般ユーザーに変更</button>
+                  </form>
+                <% } else {%>
+                  <span>あなたのユーザーです</span>
+                <% } %>
+              <% } else if(use.administrator === "normal"){%>
+                <span>権限：一般ユーザー</span><br>
+                <form action="/user/admin" method="post" class="admin-button">
+                    <input type="hidden" name="userid" id="" value="<%= use.id %>">
+                    <button class="reply-button">管理者に変更</button>
+                </form>
+              <% } %>
+              <% if(user.id !== use.id) { %>
+                <form action="/user/<%= use.id %>" method="get">
+                    <button class="reply-button"><i class="fa-solid fa-user-slash"></i>ユーザーを削除</button>
+                </form>
+              <% } %>
+            </div>
+          <% } %>
+        <% } %>
+      <% } else {%>
+      <div class="user-box">
+        <p>社員ID: <%= user.employee_id %></p>
+          <p>権限: 一般ユーザー</p>
+      <% } %>
+    </div>
+
+  </body>
+</html>

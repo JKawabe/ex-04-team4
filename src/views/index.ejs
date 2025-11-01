@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ja">
+  <%- include('head') %>
+  <body>
+    <%- include('header') %>
+    <div id="body-size">
+      <div class="threadbox">
+        <p style="margin-top: 10px; margin-bottom: 0; margin-left: 15px; font-weight: bold">スレッド一覧</p>
+        <a href="/threads/favorite" class="favorite-button"><i class="fa-solid fa-star"></i>お気に入りのスレッドを表示</a>
+        <% for (const thread of threads) { %>
+          <a href="/threads/<%= thread.id %>">
+            <div class="box" id="box-hover<%= thread.id %>" href="/threads/<%= thread.id %>">
+              <p class="box-thread-title"><%= thread.title.slice(0, 30) %><%if(thread.title.length > 30) {%>...<%}%></p>
+              <p class="box-thread-overview"><%= thread.overview.slice(0, 50) %><%if(thread.overview.length > 50) {%>...<%}%></p>
+            </div>
+          </a>
+        <% } %>
+      </div>
+      
+      <div class="threadbox-detail">
+        <% let i = 0; %>
+        <% for (const thread of threads) { %>
+          <div class="box-detail" id="box-detail-hover<%= thread.id %>"">
+            <p class="box-thread-title-detail">
+              <%= thread.title %>
+              <% if(favorites[i++] ) { %>
+                <i class="fa-solid fa-star" style="margin-left: 10px;"></i>
+              <% } %>
+            </p>
+            <% if (thread.anonymous === "anonymous") { %>
+              <span>匿名</span>
+            <%} else if (thread.anonymous === "username") { %>
+              <span>非匿名</span>
+            <% } %>
+            <sapn style="margin-left: 10px;">作成日時:
+            <% const min = ("0" + thread.createdAt.getMinutes()).slice(-2);
+            const sec = ("0" + thread.createdAt.getSeconds()).slice(-2); const
+            time = thread.createdAt.getFullYear() + "/" +
+            (thread.createdAt.getMonth() + 1) + "/" + thread.createdAt.getDate()
+            + " " + thread.createdAt.getHours() + ":" + min + ":" + sec; %> <%=
+            time %></sapn>
+            <div class="box-thread-overview-detail">
+              <p><%= thread.overview %></p>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </body>
+</html>
