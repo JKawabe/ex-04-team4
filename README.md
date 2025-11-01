@@ -1,6 +1,12 @@
 # ex-04-team4
 
-機能説明
+## 使い方
+npm i  
+npm run build  
+npm start  
+http://localhost:3010 にアクセス  
+
+## 機能説明
 
 1. ログイン・会員登録  
    ・管理者とそうでないアカウントでそれぞれログインできます。  
