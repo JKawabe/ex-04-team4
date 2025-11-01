@@ -1,0 +1,13 @@
+<head>
+  <meta charset="utf-8" />
+  <title>明治大学情報科学システムズ匿名掲示板</title>
+  <link href="/style.css" rel="stylesheet" />
+  <link href="https://use.fontawesome.com/releases/v6.5.1/css/all.css" rel="stylesheet">
+  <script defer src="/thread.js"></script>
+  <% if(user) {%>
+    <script>
+      const color = "<%= user.theme_color %>"
+      document.styleSheets[0].cssRules[0].style.setProperty('--theme-color', color);
+    </script>
+  <% } %>
+</head>

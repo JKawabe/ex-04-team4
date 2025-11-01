@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ja">
+  <%- include('head') %>
+  <body>
+    <%- include('header') %>
+    <div class="delete-thread-div">
+      <div>
+        <p class="box-thread-title-detail"><%= thread.title %></p>
+        <% if (thread.anonymous === "anonymous") { %>
+          <p>匿名</p>
+        <%} else if (thread.anonymous === "username") { %>
+          <p>非匿名</p>
+        <% } %>
+        <div class="box-thread-overview-detail">
+          <p><%= thread.overview %></p>
+        </div>
+      </div>
+      <h2>このスレッドを削除しますか？</h2>
+      <form action="/threads/<%= thread.id %>" method="post">
+        <button type="submit" class="reply-button">削除</button>
+      </form>
+      <form action="/threads/<%= thread.id %>" >
+        <button type="submit" class="reply-button">戻る</button>
+      </form>
+    </div>
+  </body>
+</html>

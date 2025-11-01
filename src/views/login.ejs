@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="ja">
+  <%- include('head') %>
+  <body>
+    <%- include('header') %>
+    <div id="loginformtag">
+        <div id="login-form-box">
+            <form action="/user" method="post">
+                <p style="margin: 0; font-weight: bold;">社員IDかユーザー名</p>
+                <input type="text" class="password" placeholder="社員ID or username" name="username" required>   
+                <p style="margin: 0; font-weight: bold;">パスワード</p>
+                <input type="password" class="password" placeholder="password" name="password" required>
+                <button class="login-button">ログイン</button> 
+            </form>
+        </div>
+    </div>
+  </body>
+</html>

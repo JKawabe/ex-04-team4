@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ja">
+  <%- include('head') %>
+  <body>
+    <%- include('header') %>
+    <div class="delete-thread-div">
+      <div>
+        <p class="box-thread-title-detail"><%= deleteUser.username %></p>
+        <div class="box-thread-overview-detail">
+          <p><%= deleteUser.employee_id %></p>
+        </div>
+      </div>
+      <h2>このユーザーを削除しますか？</h2>
+      <form action="/user/delete" method="post">
+        <input type="hidden" value="<%= deleteUser.id %>" name="userid">
+        <button type="submit" class="reply-button">削除</button>
+      </form>
+      <form action="/user/profile">
+        <button type="submit" class="reply-button">戻る</button>
+      </form>
+    </div>
+  </body>
+</html>

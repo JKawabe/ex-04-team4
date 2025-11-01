@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ja">
+  <%- include('head') %>
+  <body class="thread-body">
+    <%- include('header') %>
+    <div id="registerformtag">
+    <body>
+        <div id="register-form-box">
+        <form action="/user/register" method="post">
+            <p style="margin: 0; font-weight: bold;">社員ID</p>
+            <input type="text" class="password" placeholder="社員ID" name="employee_id" required pattern="^([a-z]{2}\d{6})" title="社員IDは英小文字2文字+数字6文字です">
+            <p style="margin: 0; font-weight: bold;">パスワード</p>
+            <input type="password" class="password" placeholder="password" name="password" required pattern="^([A-Za-z0-9]{4,})" title="4文字以上の英数字を入力してください"> 
+            <p style="margin: 0; font-weight: bold;">パスワード(確認用)</p>
+            <input type="password" class="password" placeholder="password" name="repassword" required pattern="^([A-Za-z0-9]{4,})" title="4文字以上の英数字を入力してください">
+            <p style="margin: 0; font-weight: bold;">ユーザー名</p>
+            <input type="text" class="password" placeholder="username" name="username" required pattern="^(?![a-z]{2}\d{6}).*" title="社員ID形式のユーザー名は登録できません">
+            <button class="login-button">登録</button> 
+        </div>
+        <% if( error ) { %>
+            <p><%= error %></p>
+        <% } %>
+        </form>
+    </div>
+    </body>
+</html>
